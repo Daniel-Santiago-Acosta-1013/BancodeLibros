@@ -54,6 +54,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Login function
   const login = (username: string, password: string): boolean => {
+    // Check registered users in localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]') as any[];
+    const matchedUser = storedUsers.find((u: any) => u.username === username && u.password === password);
+    if (matchedUser) {
+      const user: User = {
+        username: matchedUser.username,
+        fullName: matchedUser.fullName,
+        email: matchedUser.email,
+        department: matchedUser.department,
+        memberSince: matchedUser.memberSince,
+        avatar: matchedUser.avatar,
+      };
+      setCurrentUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      if (!localStorage.getItem('userBorrowedBooks')) {
+        localStorage.setItem('userBorrowedBooks', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('userReservedBooks')) {
+        localStorage.setItem('userReservedBooks', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('userNotifications')) {
+        localStorage.setItem('userNotifications', JSON.stringify([]));
+      }
+      addNotification(`Inicio de sesión exitoso a las ${new Date().toLocaleTimeString()}`);
+      return true;
+    }
+
     // For demo purposes, hardcoded credentials
     if (username === "testuser" && password === "password123") {
       const user: User = {

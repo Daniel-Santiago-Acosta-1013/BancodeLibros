@@ -29,7 +29,12 @@ const LoginPage = () => {
   // Handle register form submission (demo only)
   const handleRegister = (e: FormEvent) => {
     e.preventDefault();
-    showToast('Registro no implementado en esta demo. Use testuser/password123', 'info');
+    // Save new user to localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]') as any[];
+    const newUser = { username, password, fullName, email, department: '', memberSince: new Date().toLocaleDateString('es-ES'), avatar: '' };
+    storedUsers.push(newUser);
+    localStorage.setItem('users', JSON.stringify(storedUsers));
+    showToast('Registro exitoso! Por favor inicia sesión.', 'success');
     setIsRegisterForm(false);
   };
 
